@@ -3,7 +3,7 @@
 Compatibility
 =============
 
-Flask-RestPlus requires Python 3.7+
+Flask-Rest requires Python 3.7+
 
 Installation
 ============

@@ -8,9 +8,9 @@ from api.database.model import Category, User, Article
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from mongoengine.errors import FieldDoesNotExist, NotUniqueError, DoesNotExist, ValidationError, InvalidQueryError
 
-from api.decorators import authentication
-from api.errors import ArticleAlreadyExistsError, InternalServerError, UpdatingArticleError, DeletingArticleError, \
-    CategoryNotExistsError, ArticleNotExistsError, CreateOrModifyDateNotCanBeSet, InvalidAuthorization
+from api.decorators import authentication, validate_id
+from api.errors import ArticleAlreadyExistsError, InternalServerError, CategoryNotExistsError,\
+    ArticleNotExistsError, CreateOrModifyDateNotCanBeSet
 
 
 class ArticlesApi(Resource):
@@ -53,7 +53,6 @@ class ArticlesApi(Resource):
             article = Article(**body, added_by=user)
             article.save()
             return {'id': str(article.id)}, 200
-
         except (ValidationError, FieldDoesNotExist, CreateOrModifyDateNotCanBeSet, CategoryNotExistsError) as e:
             raise e
         except NotUniqueError:
@@ -66,11 +65,9 @@ class ArticleApi(Resource):
 
     @jwt_required
     @authentication
+    @validate_id
     def put(self, id):
         try:
-            if not ObjectId.is_valid(id):
-                raise InvalidId
-
             body = request.get_json()
             if len(body) == 0:
                 raise ValidationError
@@ -87,7 +84,7 @@ class ArticleApi(Resource):
 
             Article.objects.get(id=id).update(**body)
             return '', 200
-        except (InvalidId, CategoryNotExistsError, ValidationError) as e:
+        except (CategoryNotExistsError, ValidationError) as e:
             raise e
         except InvalidQueryError:
             raise FieldDoesNotExist
@@ -98,32 +95,22 @@ class ArticleApi(Resource):
 
     @jwt_required
     @authentication
+    @validate_id
     def delete(self, id):
         try:
-            if not ObjectId.is_valid(id):
-                raise InvalidId
-
-            user_id = get_jwt_identity()
-
-            article = Article.objects.get(id=id, added_by=user_id)
+            article = Article.objects.get(id=id)
             article.delete()
             return '', 200
-        except InvalidId as e:
-            raise e
         except DoesNotExist:
             raise ArticleNotExistsError
         except Exception:
             raise InternalServerError
 
+    @validate_id
     def get(self, id):
         try:
-            if not ObjectId.is_valid(id):
-                raise InvalidId
-
             articles = Article.objects.get(id=id).to_json()
             return Response(articles, mimetype="application/json", status=200)
-        except InvalidId as e:
-            raise e
         except DoesNotExist:
             raise ArticleNotExistsError
         except Exception:

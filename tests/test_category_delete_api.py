@@ -38,3 +38,16 @@ class TestCategoryPostApi(BaseCase):
 
         self.assertEqual(400, response.status_code)
         self.assertEqual('Category not exists', response.json['message'])
+
+    def test_invalid_delete_category_article_refers_category(self):
+        login_token = self.getLoginToken()
+
+        category_id = self.createCategory(name="test1", login_token=login_token)
+
+        self.createArticle(login_token)
+
+        response = self.app.delete('/api/category/{0}'.format(category_id),
+                                   headers={"Authorization": f"Bearer {login_token}"})
+
+        self.assertEqual(400, response.status_code)
+        self.assertEqual('Article.categories refers to it', response.json['message'])

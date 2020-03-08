@@ -8,6 +8,7 @@ from api.errors import EmailAlreadyExistsError, InternalServerError, Unauthorize
 
 
 class SignupApi(Resource):
+
     def post(self):
         try:
             body = request.get_json()
@@ -26,6 +27,7 @@ class SignupApi(Resource):
 
 
 class LoginApi(Resource):
+
     def post(self):
         try:
             body = request.get_json()

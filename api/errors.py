@@ -2,10 +2,6 @@ class InternalServerError(Exception):
     pass
 
 
-class InvalidId(Exception):
-    pass
-
-
 class EmailAlreadyExistsError(Exception):
     pass
 
@@ -18,14 +14,6 @@ class CategoryAlreadyExistsError(Exception):
     pass
 
 
-class UpdatingCategoryError(Exception):
-    pass
-
-
-class DeletingCategoryError(Exception):
-    pass
-
-
 class ArticleRefersCategoryError(Exception):
     pass
 
@@ -35,14 +23,6 @@ class CategoryNotExistsError(Exception):
 
 
 class ArticleAlreadyExistsError(Exception):
-    pass
-
-
-class UpdatingArticleError(Exception):
-    pass
-
-
-class DeletingArticleError(Exception):
     pass
 
 
@@ -100,14 +80,6 @@ errors = {
         "message": "Category already exists",
         "status": 400
     },
-    "UpdatingCategoryError": {
-        "message": "Category update error",
-        "status": 403
-    },
-    "DeletingCategoryError": {
-        "message": "Category delete error",
-        "status": 403
-    },
     "ArticleRefersCategoryError": {
         "message": "Article.categories refers to it",
         "status": 400
@@ -120,14 +92,6 @@ errors = {
     "ArticleAlreadyExistsError": {
         "message": "Name or link of article already exists",
         "status": 400
-    },
-    "UpdatingArticleError": {
-        "message": "Article update error",
-        "status": 403
-    },
-    "DeletingArticleError": {
-        "message": "Article delete error",
-        "status": 403
     },
     "ArticleNotExistsError": {
         "message": "Article not exists",

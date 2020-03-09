@@ -1,5 +1,5 @@
-from datetime import datetime
 import re
+from datetime import datetime
 import mongoengine_goodjson as gj
 from flask_bcrypt import generate_password_hash, check_password_hash
 from mongoengine import ValidationError
@@ -12,9 +12,9 @@ class User(gj.Document):
     password = db.StringField(required=True)
 
     def generate_password_hash(self):
-        if self.password is None:
-            raise ValidationError
-        elif not re.match(r'[A-Za-z0-9@#$%^&+=]{6,64}', self.password):
+        if self.password is None\
+                or not isinstance(self.password, str)\
+                or not re.match(r'[A-Za-z0-9@#$%^&+=]{6,64}', self.password):
             raise ValidationError
 
         self.password = generate_password_hash(self.password).decode('utf8')

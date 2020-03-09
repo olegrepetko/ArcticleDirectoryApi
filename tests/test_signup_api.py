@@ -82,7 +82,7 @@ class TestSignUpApi(BaseCase):
     def test_invalid_signup_with_wrong_password(self):
         user_payload = {
             "email": "test@test.com",
-            "password": "0"
+            "password": 0
         }
 
         response = self.app.post("/api/auth/signup", headers={"Content-Type": "application/json"},
